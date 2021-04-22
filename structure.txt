@@ -1,0 +1,18 @@
+- Annonymous: no data saving, no cookies, every user recieves 
+
+
+
+TODO:
+
+
+Room System
+ - create Room
+ - join Room
+
+Server
+ - creates rooms
+ 
+Client
+ - connects Peer over rooms
+ - connects peer over servers
+ - sending messages over the server
