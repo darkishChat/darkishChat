@@ -25,6 +25,8 @@ io.on('connection', socket => {
         socket.join(roomId)
         socket.to(roomId).emit('user-connected', userId)
     })
+
+    
 })
 
 server.listen(3000);
