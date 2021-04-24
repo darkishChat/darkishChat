@@ -4,6 +4,8 @@ const peer = new Peer(undefined, {
   port: "3001",
 });
 
+let readyConn = new CustomEvent('readyConn');
+
 const sendBtn = document.querySelector("#send-btn");
 const msgInp = document.querySelector("#msg-inp");
 
@@ -41,10 +43,15 @@ peer.on("connection", function (conn) {
   });
 });
 
+
+
+
 function Broadcast(msg) {
   for (let i = 0; i < peers.length; i++) {
     let conn = peer.connect(peers[i]);
-    console.log("Created new connection for peer: " + conn.peer)
-    conn.send(msg);
+    sendBtn.addEventListener("readyConn", () => {
+      conn.send(msg);
+    })
+    sendBtn.dispatchEvent(readyConn);
   }
 }
