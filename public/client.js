@@ -4,16 +4,14 @@ const peer = new Peer(undefined, {
   port: "3001",
 });
 
-let readyConn = new CustomEvent('readyConn');
-
 const sendBtn = document.querySelector("#send-btn");
 const msgInp = document.querySelector("#msg-inp");
 
-let peers = [];
+let connections = [];
 
 peer.on("open", (id) => {
   socket.emit("join-room", ROOM_ID, id);
-  peers.push(id);
+  connections.push(peer.connect(id));
 });
 
 socket.on("user-connected", (userId) => {
@@ -24,34 +22,29 @@ socket.on("user-connected", (userId) => {
 function ConnectToUsr(userId) {
   let conn = peer.connect(userId);
 
-  peers.push(conn.peer);
+  connections.push(conn);
 
   sendBtn.addEventListener("click", () => {
-    Broadcast(msgInp.value);
+    broadcast("aa");
   });
 }
 
 peer.on("connection", function (conn) {
-  peers.push(conn.peer);
+  connections.push(conn);
 
-  conn.on("data", function (data) {
-    console.log(data);
+  connections.forEach((connection) => {
+    connection.on("data", function (data) {
+      console.log(data);
 
-    sendBtn.addEventListener("click", () => {
-      Broadcast(msgInp.value);
+      sendBtn.addEventListener("click", () => {
+        broadcast("aa");
+      });
     });
   });
 });
 
-
-
-
-function Broadcast(msg) {
-  for (let i = 0; i < peers.length; i++) {
-    let conn = peer.connect(peers[i]);
-    sendBtn.addEventListener("readyConn", () => {
-      conn.send(msg);
-    })
-    sendBtn.dispatchEvent(readyConn);
-  }
+function broadcast(msg) {
+  connections.forEach((connection) => {
+    connection.send(msg);
+  });
 }
